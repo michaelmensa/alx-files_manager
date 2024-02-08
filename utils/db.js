@@ -27,7 +27,11 @@ class DBClient {
 
   // isAlive to check if DB is connected
   isAlive() {
-    return this.client.isConnected();
+    try {
+      return this.client.topology.isConnected();
+    } catch (error) {
+      return false;
+    }
   }
 
   // async nbUsers to count number of docs in users collection
