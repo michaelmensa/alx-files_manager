@@ -11,7 +11,7 @@ class RedisClient {
 
   // returns true when connection to Redis is a success or false if otherwise
   isAlive() {
-    return !this.client.connected;
+    return this.client.connected;
   }
 
   // async get that takes key as arg and returns the value stored for this key
