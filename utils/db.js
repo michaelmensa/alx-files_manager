@@ -56,17 +56,22 @@ class DBClient {
 
   // async findUser() takes email arg and returns one user
   async findUser(email) {
-    try {
-      const user = await this.db.collection('users').findOne({ email });
-      return user || null;
-    } catch (error) {
-      console.log('Error finding user:', error);
+    if (!email) {
+      throw new Error('Email missing');
     }
+    const user = await this.db.collection('users').findOne({ email });
+    return user || null;
   }
 
   // async createUser() with takes email and password and saves to mongodb
   async createUser(email, password) {
     try {
+      if (!email) {
+        throw new Error('Email missing');
+      }
+      if (!password) {
+        throw new Error('Password missing');
+      }
       await this.db.collection('users').insertOne({ email, password });
     } catch (error) {
       console.log('Could not create user in users collection', error);
