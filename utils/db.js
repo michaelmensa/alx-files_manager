@@ -53,6 +53,25 @@ class DBClient {
       console.log('Error counting docs in files collection', error);
     }
   }
+
+  // async findUser() takes email arg and returns one user
+  async findUser(email) {
+    try {
+      const user = await this.db.collection('users').findOne({ email });
+      return user || null;
+    } catch (error) {
+      console.log('Error finding user:', error);
+    }
+  }
+
+  // async createUser() with takes email and password and saves to mongodb
+  async createUser(email, password) {
+    try {
+      await this.db.collection('users').insertOne({ email, password });
+    } catch (error) {
+      console.log('Could not create user in users collection', error);
+    }
+  }
 }
 
 const dbClient = new DBClient();
