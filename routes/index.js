@@ -19,7 +19,7 @@ const authenticate = async (req, res, next) => {
     if (exists) {
       next();
     } else {
-    res.status(401).json({ error: 'Unauthorized' });
+      res.status(401).json({ error: 'Unauthorized' });
     }
   } catch (error) {
     res.status(500).json({ error: `Middleware Internal server error: ${error}` });

@@ -3,24 +3,29 @@ import redisClient from '../utils/redis';
 
 const usersController = {
   postNew: async (req, res) => {
-    const { email, password } = req.body;
+    const email = req.body ? req.body.email : null;
+    const password = req.body ? req.body.password : null;
+
     // check if email is missing
     if (!email) {
       res.status(400).json({ error: 'Missing email' });
+      return;
     }
 
     // check if password is missing
     if (!password) {
       res.status(400).json({ error: 'Missing password' });
+      return;
     }
 
     try {
     // create user
       const existingUser = await dbClient.findUser(email);
       if (!existingUser) {
-        const newUser = await dbClient.createUser(email, password);
-        const { _id, email: _email } = newUser;
-        res.status(201).json({ id: _id, email: _email });
+        await dbClient.createUser(email, password);
+        const newUser = await dbClient.findUser(email);
+        // const { _id, email: _email } = newUser;
+        res.status(201).json({ id: newUser._id.toString(), email: newUser.email });
       } else {
         res.status(400).json({ error: 'Already exist' });
       }
