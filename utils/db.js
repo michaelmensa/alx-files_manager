@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import utils from './utils';
+// import utils from './utils';
 
 require('dotenv').config();
 
@@ -36,7 +36,7 @@ class DBClient {
     const count = await this.db.collection('files').countDocuments();
     return count;
   }
-
+/**
   // async findUser(email) returns user if exists otherwise null
   async findUser(email) {
     const user = await this.db.collection('users').findOne({ email });
@@ -83,6 +83,7 @@ class DBClient {
       console.log('No user found with email');
     }
   }
+* */
 }
 
 const dbClient = new DBClient();
