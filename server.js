@@ -6,7 +6,7 @@ const routes = require('./routes/index');
 const app = express();
 
 // Middleware to parse JSON bodies
-const parser = app.use(bodyParser.json());
+app.use(bodyParser.json());
 
 app.use('/', routes);
 
