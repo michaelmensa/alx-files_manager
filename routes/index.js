@@ -16,10 +16,11 @@ const authenticate = async (req, res, next) => {
       res.status(401).json({ error: 'Unauthorized: Missing token' });
     }
     const exists = await redisClient.get(`auth_${token}`);
-    if (!exists) {
-      res.status(401).json({ error: 'Unauthorized: Invalid token' });
+    if (exists) {
+      next();
+    } else {
+    res.status(401).json({ error: 'Unauthorized' });
     }
-    next();
   } catch (error) {
     res.status(500).json({ error: `Middleware Internal server error: ${error}` });
   }

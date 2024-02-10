@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import dbClient from '../utils/db';
 import redisClient from '../utils/redis';
 
@@ -21,12 +20,12 @@ const usersController = {
       if (!existingUser) {
         const newUser = await dbClient.createUser(email, password);
         const { _id, email: _email } = newUser;
-        res.status(201).json({ id: _id.toString(), email: _email });
+        res.status(201).json({ id: _id, email: _email });
       } else {
         res.status(400).json({ error: 'Already exist' });
       }
     } catch (error) {
-      res.status(500).json({error: `Error when creating user: ${error}`});
+      res.status(500).json({ error: `Error when creating user: ${error}` });
     }
   },
 
