@@ -13,9 +13,13 @@ class DBClient {
     this.dbName = dbName;
 
     // connect to db when DBClient instance is created
-    this.connect();
+    (async () => {
+      await this.client.connect();
+      this.db = this.client.db(this.dbName);
+    })();
   }
 
+  /**
   // connect to db
   async connect() {
     try {
@@ -25,7 +29,7 @@ class DBClient {
       console.log('Error connecting to MongoDB', error);
     }
   }
-
+* */
   // isAlive to check if DB is connected
   isAlive() {
     try {
