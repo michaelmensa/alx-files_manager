@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+
 require('dotenv').config();
 
 class DBClient {
