@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+import utils from './utils';
 
 require('dotenv').config();
 
@@ -38,9 +39,6 @@ class DBClient {
 
   // async findUser(email) returns user if exists otherwise null
   async findUser(email) {
-    if (!email) {
-      throw new Error('Email missing');
-    }
     const user = await this.db.collection('users').findOne({ email });
     return user || null;
   }
@@ -53,17 +51,8 @@ class DBClient {
 
   // async createUser() with takes email and password and saves to mongodb
   async createUser(email, password) {
-    try {
-      if (!email) {
-        throw new Error('Email missing');
-      }
-      if (!password) {
-        throw new Error('Password missing');
-      }
-      await this.db.collection('users').insertOne({ email, password });
-    } catch (error) {
-      console.log('Could not create user in users collection', error);
-    }
+    const hashedPassword = utils.hashPassword(password);
+    await this.db.collection('users').insertOne({ email, password: hashedPassword });
   }
 
   // async updateUserByField() with takes email, field and value as args
