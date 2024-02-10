@@ -19,18 +19,6 @@ class DBClient {
     })();
   }
 
-  /**
-  // connect to db
-  async connect() {
-    try {
-      await this.client.connect();
-      this.db = this.client.db(this.dbName);
-    } catch (error) {
-      console.log('Error connecting to MongoDB', error);
-    }
-  }
-* */
-  // isAlive to check if DB is connected
   isAlive() {
     try {
       return this.client.topology.isConnected();
