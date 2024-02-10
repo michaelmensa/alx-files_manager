@@ -1,5 +1,4 @@
 import { MongoClient } from 'mongodb';
-
 require('dotenv').config();
 
 class DBClient {
@@ -19,12 +18,9 @@ class DBClient {
     })();
   }
 
+  // isAlive() to check if MongoClient is connected
   isAlive() {
-    try {
-      return this.client.topology.isConnected();
-    } catch (error) {
-      return false;
-    }
+    return this.client.topology.isConnected();
   }
 
   // async nbUsers to count number of docs in users collection
