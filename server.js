@@ -1,7 +1,7 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const routes = require('./routes/index');
 // use body-parser to parse JSON data sent in request body
-const bodyParser = require('body-parser');
 
 const app = express();
 

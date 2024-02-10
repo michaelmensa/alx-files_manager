@@ -8,22 +8,22 @@ const appController = {
     try {
       const redisAlive = redisClient.isAlive();
       const dbAlive = dbClient.isAlive();
-      res.status(200).json({redis: redisAlive, db: dbAlive});
+      res.status(200).json({ redis: redisAlive, db: dbAlive });
     } catch (error) {
-      res.status(500).json({Server: `${error}`});
+      res.status(500).json({ Server: `${error}` });
     }
   },
 
   getStats: async (req, res) => {
     try {
-      await dbClient.connect();
       const countUsers = await dbClient.nbUsers();
       const countFiles = await dbClient.nbFiles();
-      res.status(200).json({users: countUsers, files: countFiles});
+      // await dbClient.deleteAllUsers();
+      res.status(200).json({ users: countUsers, files: countFiles });
     } catch (error) {
-      res.status(500).json({Server: `${error}`});
+      res.status(500).json({ Server: `${error}` });
     }
-  }
+  },
 };
 
 module.exports = appController;
