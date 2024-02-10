@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+
 require('dotenv').config();
 
 class DBClient {
@@ -36,30 +37,28 @@ class DBClient {
 
   // async nbUsers to count number of docs in users collection
   async nbUsers() {
-    try {
-      const count = await this.db.collection('users').countDocuments();
-      return count;
-    } catch (error) {
-      console.log('Error counting docs in users collection', error);
-    }
+    const count = await this.db.collection('users').countDocuments();
+    return count;
   }
 
   // async nbFiles to count number of documents in files collection
   async nbFiles() {
-    try {
-      const count = await this.db.collection('files').countDocuments();
-      return count;
-    } catch (error) {
-      console.log('Error counting docs in files collection', error);
-    }
+    const count = await this.db.collection('files').countDocuments();
+    return count;
   }
 
-  // async findUser() takes email arg and returns one user
+  // async findUser(email) returns user if exists otherwise null
   async findUser(email) {
     if (!email) {
       throw new Error('Email missing');
     }
     const user = await this.db.collection('users').findOne({ email });
+    return user || null;
+  }
+
+  // async findUserByField() takes field and value args and returns one user
+  async findUserByField(field, value) {
+    const user = await this.db.collection('users').findOne({ [field]: value });
     return user || null;
   }
 
@@ -75,6 +74,35 @@ class DBClient {
       await this.db.collection('users').insertOne({ email, password });
     } catch (error) {
       console.log('Could not create user in users collection', error);
+    }
+  }
+
+  // async updateUserByField() with takes email, field and value as args
+  // and updates user document in users collection
+  async updateUserByField(email, field, value) {
+    const filter = { email };
+    const update = { $set: { [field]: value } };
+    await this.db.collection('users').updateOne(filter, update);
+  }
+
+  // async deleteUserField() deletes a field from user doc in collections user
+  async deleteUserField(email, field) {
+    const filter = { email };
+    const update = { $unset: { [field]: 1 } };
+    await this.db.collection('users').updateOne(filter, update);
+  }
+
+  // async deleteAllUsers() to delete all users
+  async deleteAllUsers() {
+    await this.db.collection('users').deleteMany({});
+  }
+
+  // async deleteUserByEmail(email)
+  async deleteUserByEmail(email) {
+    const filter = { email };
+    const result = await this.db.collection('users').deleteOne(filter);
+    if (result.deletedCount === 0) {
+      console.log('No user found with email');
     }
   }
 }
