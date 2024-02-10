@@ -22,9 +22,7 @@ class RedisClient {
   // with an expiration set by duration arg
   async set(key, value, duration) {
     const asyncSet = promisify(this.client.set).bind(this.client);
-    setTimeout(() => {
-      asyncSet(key, value);
-    }, duration);
+    await asyncSet(key, value, 'EX', duration);
   }
 
   // async del that takes key as arg and remove the value for this key
