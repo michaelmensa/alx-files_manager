@@ -4,7 +4,7 @@ const express = require('express');
 const AppController = require('../controllers/AppController');
 const UsersController = require('../controllers/UsersController');
 const AuthController = require('../controllers/AuthController');
-// const UserController = require('../controllers/UserController');
+const FilesController = require('../controllers/FilesController');
 
 const router = express.Router();
 
@@ -35,5 +35,6 @@ router.get('/users/me', authenticate, UsersController.getMe);
 
 // POST routes
 router.post('/users', UsersController.postNew);
+router.post('/files', authenticate, FilesController.postUpload);
 
 module.exports = router;
