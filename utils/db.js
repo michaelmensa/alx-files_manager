@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-// import utils from './utils';
+import utils from './utils';
 
 require('dotenv').config();
 
@@ -36,7 +36,7 @@ class DBClient {
     const count = await this.db.collection('files').countDocuments();
     return count;
   }
-/**
+
   // async findUser(email) returns user if exists otherwise null
   async findUser(email) {
     const user = await this.db.collection('users').findOne({ email });
@@ -83,7 +83,25 @@ class DBClient {
       console.log('No user found with email');
     }
   }
-* */
+
+  // file collection methods
+
+  // async createFile(File) takes a file object and inserts in collections 'files'
+  async createFile(file) {
+    await this.db.collection('files').insertOne(file);
+  }
+
+  // async getFile(parentId) takes file.parentId and finds the file
+  async getFile(parentId) {
+    const filter = { parentId };
+    const file = await this.db.collection('files').findOne(filter);
+    return file || null;
+  }
+
+  // async deleteAllFiles() to delete all files
+  async deleteAllFiles() {
+    await this.db.collection('files').deleteMany({});
+  }
 }
 
 const dbClient = new DBClient();
