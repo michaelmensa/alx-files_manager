@@ -171,16 +171,18 @@ const filesController = {
   },
 
   getFile: async (req, res) => {
-    const { fileId } = req.params;
+    const { id } = req.params;
     const token = req.headers['x-token'];
     const user = await dbClient.findUserByField('auth_token', token);
     const { _id } = user;
 
     // check if file exists in DB and is for user, user authenticated
     const file = await dbClient.getFileByField('userId', _id);
-    console.log(file);
-    console.log(file.isPublic);
-    if (!file && !file.isPublic) {
+    if (file._id.toString() !== id) {
+      res.status(404).json({ error: 'Not found' });
+      return;
+    }
+    if (file.isPublic === true && file.userId !== _id) {
       res.status(404).json({ error: 'Not found' });
       return;
     }
@@ -188,11 +190,13 @@ const filesController = {
     // check document type
     if (file.type === VALID_FILE_TYPES.folder) {
       res.status(400).json({ error: "A folder doesn't have content" });
+      return;
     }
 
     // check if file is locally present
     if (!file.localPath || !fs.existsSync(file.localPath)) {
       res.status(400).json({ error: 'Not found' });
+      return;
     }
 
     const mimeType = mime.lookup(file.name);
