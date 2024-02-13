@@ -98,6 +98,38 @@ const filesController = {
       res.status(500).json({ error: `Adding file: Internal Server Error: ${error}` });
     }
   },
+
+  getShow: async (req, res) => {
+    // retrieve user based on token
+    const token = req.headers['x-token'];
+    const user = await dbClient.findUserByField('auth_token', token);
+    const { id } = req.params;
+    const { _id } = user;
+
+    // find file based on req.params.id
+    const file = await dbClient.getFileByField('userId', _id);
+
+    if (!file || file._id.toString() !== id) {
+      res.status(404).json({ error: 'Not found' });
+    } else {
+      res.json(file);
+    }
+  },
+
+  getIndex: async (req, res) => {
+    const token = req.headers['x-token'];
+    const user = await dbClient.findUserByField('auth_token', token);
+    const parentId = req.query.parentId ? parseInt(req.query.parentId, 10) : 0;
+    const page = req.query.page ? parseInt(req.query.page, 10) : 0;
+    const skip = page * 20;
+    const pipeline = [
+      { $match: { userId: user._id, parentId } },
+      { $skip: skip },
+      { $limit: 20 },
+    ];
+    const files = await dbClient.db.collection('files').aggregate(pipeline).toArray();
+    res.status(200).json(files);
+  },
 };
 
 module.exports = filesController;
