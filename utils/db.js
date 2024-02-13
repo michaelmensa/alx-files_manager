@@ -93,18 +93,20 @@ class DBClient {
 
   // async getFile(key) takes file.key and finds the file
   async getFile(key) {
-    try {
-      const filter = { key };
-      const file = await this.db.collection('files').findOne(filter);
-      return file || null;
-      } catch (error) {
-        throw error;
-      }
+    const filter = { key };
+    const file = await this.db.collection('files').findOne(filter);
+    return file || null;
   }
 
   // async deleteAllFiles() to delete all files
   async deleteAllFiles() {
     await this.db.collection('files').deleteMany({});
+  }
+
+  // async getFileByField() takes field and value args and returns one user
+  async getFileByField(field, value) {
+    const file = await this.db.collection('files').findOne({ [field]: value });
+    return file || null;
   }
 }
 
