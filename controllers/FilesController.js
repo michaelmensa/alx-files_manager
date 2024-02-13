@@ -3,6 +3,7 @@ import dbClient from '../utils/db';
 
 const fs = require('fs');
 const path = require('path');
+const mime = require('mime-types');
 
 const FOLDER_PATH = process.env.FOLDER_PATH || '/tmp/files_manager';
 const VALID_FILE_TYPES = {
@@ -167,6 +168,38 @@ const filesController = {
     await dbClient.updateFileByField({ _id: file._id }, 'isPublic', false);
     const updatedFile = await dbClient.getFileByField('userId', _id);
     return res.json(updatedFile);
+  },
+
+  getFile: async (req, res) => {
+    const { fileId } = req.params;
+    const token = req.headers['x-token'];
+    const user = await dbClient.findUserByField('auth_token', token);
+    const { _id } = user;
+
+    // check if file exists in DB and is for user, user authenticated
+    const file = await dbClient.getFileByField('userId', _id);
+    console.log(file);
+    console.log(file.isPublic);
+    if (!file && !file.isPublic) {
+      res.status(404).json({ error: 'Not found' });
+      return;
+    }
+
+    // check document type
+    if (file.type === VALID_FILE_TYPES.folder) {
+      res.status(400).json({ error: "A folder doesn't have content" });
+    }
+
+    // check if file is locally present
+    if (!file.localPath || !fs.existsSync(file.localPath)) {
+      res.status(400).json({ error: 'Not found' });
+    }
+
+    const mimeType = mime.lookup(file.name);
+
+    const fileContent = fs.readFileSync(file.localPath);
+    res.setHeader('Content-Type', mimeType);
+    res.send(fileContent);
   },
 };
 
