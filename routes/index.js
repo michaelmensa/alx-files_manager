@@ -34,6 +34,7 @@ router.get('/disconnect', authenticate, AuthController.getDisconnect);
 router.get('/users/me', authenticate, UsersController.getMe);
 router.get('/files/:id', authenticate, FilesController.getShow);
 router.get('/files', authenticate, FilesController.getIndex);
+router.get('/files/:id/data', authenticate, FilesController.getFile);
 
 // POST routes
 router.post('/users', UsersController.postNew);
