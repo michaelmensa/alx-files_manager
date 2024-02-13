@@ -108,6 +108,12 @@ class DBClient {
     const file = await this.db.collection('files').findOne({ [field]: value });
     return file || null;
   }
+
+  // async updateFileByField(filter, field, value) to update field with value
+  async updateFileByField(filter, field, value) {
+    const update = { $set: { [field]: value } };
+    await this.db.collection('files').updateOne(filter, update);
+  }
 }
 
 const dbClient = new DBClient();

@@ -130,6 +130,44 @@ const filesController = {
     const files = await dbClient.db.collection('files').aggregate(pipeline).toArray();
     res.status(200).json(files);
   },
+
+  putPublish: async (req, res) => {
+    const token = req.headers['x-token'];
+    const user = await dbClient.findUserByField('auth_token', token);
+    const { id } = req.params;
+    const { _id } = user;
+
+    // find file based on user id
+    const file = await dbClient.getFileByField('userId', _id);
+    const fileId = file._id.toString();
+
+    // if no file is linke to user and req.param, return error 404
+    if (!file || fileId !== id) {
+      res.status(404).json({ error: 'Not found' });
+    }
+    await dbClient.updateFileByField({ _id: file._id }, 'isPublic', true);
+    const updatedFile = await dbClient.getFileByField('userId', _id);
+    return res.json(updatedFile);
+  },
+
+  putUnpublish: async (req, res) => {
+    const token = req.headers['x-token'];
+    const user = await dbClient.findUserByField('auth_token', token);
+    const { id } = req.params;
+    const { _id } = user;
+
+    // find file based on user id
+    const file = await dbClient.getFileByField('userId', _id);
+    const fileId = file._id.toString();
+
+    // if no file is linke to user and req.param, return error 404
+    if (!file || fileId !== id) {
+      res.status(404).json({ error: 'Not found' });
+    }
+    await dbClient.updateFileByField({ _id: file._id }, 'isPublic', false);
+    const updatedFile = await dbClient.getFileByField('userId', _id);
+    return res.json(updatedFile);
+  },
 };
 
 module.exports = filesController;
