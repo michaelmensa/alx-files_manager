@@ -33,18 +33,16 @@ const filesController = {
       return;
     }
 
-    try {
-      if (parentId) {
-        const parentFile = await dbClient.getFile(parentId);
-        if (!parentFile) {
-          res.status(400).json({ error: 'Parent not found' });
-          return;
-        }
-        if (parentFile.type !== VALID_FILE_TYPES.folder) {
-          res.status(400).json({ error: 'Parent is not a folder' });
-          return;
-        }
+    const parentFile = await dbClient.getFileByField('parentId', parentId);
+    if (parentFile) {
+      if (parentFile.type !== VALID_FILE_TYPES.folder) {
+        res.status(400).json({ error: 'Parent is not a folder' });
+        return;
       }
+      res.status(400).json({ error: 'Parent not found' });
+      return;
+    }
+    try {
       let localPath = '';
       if (type === VALID_FILE_TYPES.folder) {
         const newFolder = {
