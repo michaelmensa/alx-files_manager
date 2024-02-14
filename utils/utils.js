@@ -1,14 +1,10 @@
 import crypto from 'crypto';
 
 const utils = {
-  hashPassword: (string) => {
-    // takes a string and hashes it with sha1
-    return crypto.createHash('sha1').update(string).digest('hex');
-  },
+  // takes a string and hashes it with sha1
+  hashPassword: (string) => crypto.createHash('sha1').update(string).digest('hex'),
 
-  decodeString: (string) => {
-    return decodeURIComponent(escape(atob(string)));
-  }
+  decodeString: (string) => Buffer.from(string, 'base64').toString('utf-8'),
 };
 
 module.exports = utils;
