@@ -18,8 +18,8 @@ const appController = {
     try {
       const countUsers = await dbClient.nbUsers();
       const countFiles = await dbClient.nbFiles();
-      //await dbClient.deleteAllUsers();
-      //await dbClient.deleteAllFiles();
+      // await dbClient.deleteAllUsers();
+      // await dbClient.deleteAllFiles();
       res.status(200).json({ users: countUsers, files: countFiles });
     } catch (error) {
       res.status(500).json({ Server: `${error}` });
