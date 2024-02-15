@@ -16,10 +16,13 @@ const authController = {
 
       // retrieve the email and password from base64 string
       const decodedString = utils.decodeString(base64String);
-      const email = decodedString.split(':')[0];
+      const [email, password] = decodedString.split(':');
 
       // find user with email if exists
       const user = await dbClient.findUser(email);
+      if (utils.hashPassword(password) !== user.password) {
+        res.status(401).json({ error: 'Wrong Password' });
+      }
       if (!user) {
         res.status(401).json({ error: 'Unauthorized' });
       } else {
