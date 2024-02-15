@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 const app = express();
 
 // Middleware to parse JSON bodies
-// const parser = app.use(bodyParser.json());
+app.use(express.json());
 
 app.use('/', routes);
 
